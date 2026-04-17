@@ -1,4 +1,5 @@
 //variáveis
+let gamestate = "serve";
 let ball;
 let paddle;
 let bricks = [];
@@ -7,6 +8,8 @@ let cols = 8;
 let brickWidth = 60;
 let brickHeight = 20;
 let spacing = 5;
+let score = 0;
+let lifes = 3;
 
 function setup() {
     createCanvas(600, 600);
@@ -35,6 +38,22 @@ function setup() {
 function draw() {
     //fundo
     background(0);
+
+    //texto
+    //dica
+    fill (255);
+    textSize(16);
+    text("CLIQUE EM QUALQUER LUGAR PARA INICIAAR O JOGO", width / 2 - 220, height / 2);
+
+    //pontuação
+    fill (255);
+    textSize(16);
+    text("Score: " + score, 20, 20);
+
+    //vidas restantes
+    fill ("red");
+    textSize(16);
+    text("Vidas restantes: " + lifes, 20, 40);
     
     //bola
     ellipseMode(RADIUS);
@@ -68,7 +87,19 @@ function draw() {
     }
 
     //colisão da bola com os tijolosc
-    
+    for (let i = bricks.length - 1; i >= 0; i--) {
+        let b = bricks[i];
+        if (ball.x + ball.r > b.x &&
+            ball.x - ball.r < b.x + b.w &&
+            ball.y + ball.r > b.y &&
+            ball.y - ball.r < b.y + b.h) {
+                ball.vy *= -1;
+                score += 5;
+                bricks.splice(i, 1);
+                break;
+        }
+    }
+
     //colisão da bola com as paredes
     if (ball.x - ball.r < 0 || ball.x + ball.r > width) ball.vx *= -1;
     if (ball.y - ball.r < 0) ball.vy *= -1;
