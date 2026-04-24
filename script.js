@@ -1,4 +1,3 @@
-//variáveis
 let gamestate = "serve";
 let ball;
 let paddle;
@@ -12,6 +11,7 @@ let score = 0;
 let lifes = 3;
 
 function setup() {
+    //criação do canvas
     createCanvas(600, 600);
 
     //bola
@@ -36,33 +36,88 @@ function setup() {
 }
 
 function draw() {
-    //fundo
     background(0);
 
-    //texto
-    //dica
-    fill (255);
-    textSize(16);
-    text("CLIQUE EM QUALQUER LUGAR PARA INICIAAR O JOGO", width / 2 - 220, height / 2);
+    //condicional para antes do início do jogo(serve)
+    if (gamestate === "serve") {
+        fill (255);
+        textSize(16);
+        text("CLIQUE EM QUALQUER LUGAR PARA INICIAAR O JOGO", width / 2 - 220, height / 2);
 
-    //pontuação
+        //desenho da bola
+        ball.x = width / 2;
+        ball.y = height - 250;
+        ball.vx = 0;
+        ball.vy = 0;
+    }
+
+    //condicional para duramte o jogo(play)
+    if (gamestate === "play") {
+        //movimento da bola
+        ball.x += ball.vx;
+        ball.y += ball.vy;
+
+        //colisão da bola com as paredes
+        if (ball.x - ball.r < 0 || ball.x + ball.r > width) ball.vx *= -1;
+        if (ball.y - ball.r < 0) ball.vy *= -1;
+
+        //colisão da bola com a raquete
+        if (ball.y + ball.r > paddle.y - paddle.h / 2 &&
+            ball.y + ball.r < paddle.y + paddle.h / 2 &&
+            ball.x > paddle.x - paddle.w / 2 &&
+            ball.x < paddle.x + paddle.w / 2) {
+            ball.vy *= -1;
+            let diff = ball.x - paddle.x;
+            ball.vx = diff * 0.1;
+        }
+
+        //colisão da bola com os tijolos
+        for (let i = bricks.length - 1; i >= 0; i--) {
+            let b = bricks[i];
+            if (ball.x + ball.r > b.x &&
+                ball.x - ball.r < b.x + b.w &&
+                ball.y + ball.r > b.y &&
+                ball.y - ball.r < b.y + b.h) {
+                    ball.vy *= -1;
+                    score += 5;
+                    bricks.splice(i, 1);
+                    break;
+            }
+        }
+
+        //caso a bola saia da tela
+        if (ball.y - ball.r > height) {
+            lifes--;
+            if (lifes > 0) {
+                gamestate = "serve";
+            }
+            else {
+                gamestate = "over";
+            }
+        }
+    }
+
+    if (gamestate = "over") {
+        textSize(24);
+        text("Game Over!", width / 2 - 70, height / 2);
+    }
+
+    //textos
+    //pontuação do player
     fill (255);
     textSize(16);
     text("Score: " + score, 20, 20);
 
-    //vidas restantes
+    //vidas restantes para o player
     fill ("red");
     textSize(16);
     text("Vidas restantes: " + lifes, 20, 40);
+    //fim dos textos
     
     //bola
     ellipseMode(RADIUS);
     fill("white");
     ellipse(ball.x, ball.y, ball.r);
-
-    //movimento da bola
-    ball.x += ball.vx;
-    ball.y += ball.vy;
 
     //raquete
     rectMode(CENTER);
@@ -75,40 +130,15 @@ function draw() {
         fill (bricks[i].color);
         rect(bricks[i].x, bricks[i].y, bricks[i].w, bricks[i].h);
     }
-
-    //colisão da bola com a raquete
-    if (ball.y + ball.r > paddle.y - paddle.h / 2 &&
-        ball.y + ball.r < paddle.y + paddle.h / 2 &&
-        ball.x > paddle.x - paddle.w / 2 &&
-        ball.x < paddle.x + paddle.w / 2) {
-        ball.vy *= -1;
-        let diff = ball.x - paddle.x;
-        ball.vx = diff * 0.1;
-    }
-
-    //colisão da bola com os tijolosc
-    for (let i = bricks.length - 1; i >= 0; i--) {
-        let b = bricks[i];
-        if (ball.x + ball.r > b.x &&
-            ball.x - ball.r < b.x + b.w &&
-            ball.y + ball.r > b.y &&
-            ball.y - ball.r < b.y + b.h) {
-                ball.vy *= -1;
-                score += 5;
-                bricks.splice(i, 1);
-                break;
-        }
-    }
-
-    //colisão da bola com as paredes
-    if (ball.x - ball.r < 0 || ball.x + ball.r > width) ball.vx *= -1;
-    if (ball.y - ball.r < 0) ball.vy *= -1;
 }
 
 //jogo iniciado ao clicar com o mouse
 function mousePressed() {
-    ball.vx = random(-4, 4);
-    ball.vy = 4;
+    if (gamestate === "serve") {
+        ball.vx = random(-4, 4);
+        ball.vy = 4;
+        gamestate = "play";
+    }
 }
 
 //criação dos tijolos
