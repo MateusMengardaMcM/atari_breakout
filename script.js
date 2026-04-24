@@ -102,6 +102,17 @@ function draw() {
         text("Game Over!", width / 2 - 70, height / 2);
     }
 
+    if (bricks.length === 0 && gamestate === "play") {
+        ball.vx = 0;
+        ball.vy = 0;
+        gamestate = "end";
+    }
+
+    if (gamestate === "end") {
+        textSize(24);
+        text("Parabéns, você venceu!", width / 2 - 120, height / 2);
+    }
+
     //textos
     //pontuação do player
     fill (255);
