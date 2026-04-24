@@ -97,7 +97,7 @@ function draw() {
         }
     }
 
-    if (gamestate = "over") {
+    if (gamestate === "over") {
         textSize(24);
         text("Game Over!", width / 2 - 70, height / 2);
     }
