@@ -1,12 +1,18 @@
 let gamestate = "serve";
+
 let ball;
+let maxSpeed = 12;
+
 let paddle;
+
 let bricks = [];
-let rows = 24;
+let rows = 4;
 let cols = 8;
 let brickWidth = 60;
 let brickHeight = 20;
 let spacing = 5;
+let brickSpeed = 1;
+
 let score = 0;
 let lifes = 3;
 
@@ -27,12 +33,12 @@ function setup() {
     paddle = {
         x: width / 2,
         y: height - 20,
-        w: 600,
-        h: 50
+        w: 100,
+        h: 10
     }
 
     //chamando a função para a criação dos tijolos
-    createBrics();
+    createBricks();
 }
 
 function draw() {
@@ -51,7 +57,7 @@ function draw() {
         ball.vy = 0;
     }
 
-    //condicional para duramte o jogo(play)
+    //condicional para durante o jogo(play)
     if (gamestate === "play") {
         //movimento da bola
         ball.x += ball.vx;
@@ -78,9 +84,13 @@ function draw() {
                 ball.x - ball.r < b.x + b.w &&
                 ball.y + ball.r > b.y &&
                 ball.y - ball.r < b.y + b.h) {
-                    ball.vy *= -1;
-                    score += 5;
-                    bricks.splice(i, 1);
+                ball.vy *= -1;
+                score += 5;
+                bricks.splice(i, 1);
+                ball.vx *= 1.05;
+                ball.vy *= 1.05;
+                ball.vx = constrain(ball.vx, -maxSpeed, maxSpeed);
+                ball.vy = constrain(ball.vy, -maxSpeed, maxSpeed);
                     break;
             }
         }
@@ -136,20 +146,26 @@ function draw() {
 
     //desenho dos tijolos
     for (let i = 0; i < bricks.length; i++) {
+        bricks[i].y += brickSpeed; //faz os tijolos descerem
         fill (bricks[i].color);
         rect(bricks[i].x, bricks[i].y, bricks[i].w, bricks[i].h);
+        if (bricks[i].y + bricks[i].h >= paddle.y - paddle.h/2) {
+            lives = 0;
+            gamestate = "over";
+            brickSpeed = 0;
+        }
     }
 }
 
 function mousePressed() {
     if (gamestate === "serve") {
         ball.vx = random(-4, 4);
-        ball.vy = 40;
+        ball.vy = 4;
         gamestate = "play";
     }
 }
 
-function createBrics() {
+function createBricks() {
     bricks = [];
     let totalWidth = cols * (brickWidth + spacing) - spacing;
     let startX = (width - totalWidth) - 15;
