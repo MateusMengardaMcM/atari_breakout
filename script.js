@@ -2,7 +2,7 @@ let gamestate = "serve";
 let ball;
 let paddle;
 let bricks = [];
-let rows = 4;
+let rows = 24;
 let cols = 8;
 let brickWidth = 60;
 let brickHeight = 20;
@@ -27,8 +27,8 @@ function setup() {
     paddle = {
         x: width / 2,
         y: height - 20,
-        w: 100,
-        h: 10
+        w: 600,
+        h: 50
     }
 
     //chamando a função para a criação dos tijolos
@@ -113,7 +113,6 @@ function draw() {
         text("Parabéns, você venceu!", width / 2 - 120, height / 2);
     }
 
-    //textos
     //pontuação do player
     fill (255);
     textSize(16);
@@ -123,7 +122,6 @@ function draw() {
     fill ("red");
     textSize(16);
     text("Vidas restantes: " + lifes, 20, 40);
-    //fim dos textos
     
     //bola
     ellipseMode(RADIUS);
@@ -143,16 +141,14 @@ function draw() {
     }
 }
 
-//jogo iniciado ao clicar com o mouse
 function mousePressed() {
     if (gamestate === "serve") {
         ball.vx = random(-4, 4);
-        ball.vy = 4;
+        ball.vy = 40;
         gamestate = "play";
     }
 }
 
-//criação dos tijolos
 function createBrics() {
     bricks = [];
     let totalWidth = cols * (brickWidth + spacing) - spacing;
