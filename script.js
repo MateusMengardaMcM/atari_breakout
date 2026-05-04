@@ -1,9 +1,13 @@
 let gamestate = "serve";
 
+let clickSound;
+let hitSound;
+
 let ball;
 let maxSpeed = 12;
 
 let paddle;
+let offSet = 0;
 
 let bricks = [];
 let rows = 4;
@@ -15,6 +19,11 @@ let brickSpeed = 0;
 
 let score = 0;
 let lifes = 3;
+
+function preload() {
+    clickSound = loadSound("click.mp3");
+    hitSound = loadSound("hit.mp3");
+}
 
 function setup() {
     //criação do canvas
@@ -79,6 +88,7 @@ function draw() {
             ball.vy *= -1;
             let diff = ball.x - paddle.x;
             ball.vx = diff * 0.1;
+            if (hitSound.isLoaded()) hitSound.play();
         }
 
         //colisão da bola com os tijolos
@@ -95,7 +105,8 @@ function draw() {
                 ball.vy *= 1.05;
                 ball.vx = constrain(ball.vx, -maxSpeed, maxSpeed);
                 ball.vy = constrain(ball.vy, -maxSpeed, maxSpeed);
-                    break;
+                if (clickSound.isLoaded()) clickSound.play();
+                break;
             }
         }
 
@@ -146,7 +157,19 @@ function draw() {
     rectMode(CENTER);
     fill("yellow");
     rect(paddle.x, paddle.y, paddle.w, paddle.h);
+
+
+
     paddle.x = constrain(mouseX, paddle.w / 2, width - paddle.w / 2);
+    /*
+    if (frameCount % 10 === 0) {
+        offSet = random(-20 , 20);
+    }
+    let targetX = ball.x + offSet;
+    paddle.x = lerp(paddle.x, targetX, 0.1);
+    paddle.x = constrain(paddle.x, paddle.w / 2, width - paddle.w / 2);
+    */
+
 
     //desenho dos tijolos
     for (let i = 0; i < bricks.length; i++) {
