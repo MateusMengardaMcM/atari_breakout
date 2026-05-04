@@ -11,7 +11,7 @@ Compreendi os conceitos das bibliotecas de javaScript.
 
 ## Stacks utilizada
 
-**Front-end:** Html & JavaScript.
+**Front-end:** Html, JavaScript &biblioteca P5.
 
 ## Deploy
 
