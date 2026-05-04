@@ -11,7 +11,7 @@ let cols = 8;
 let brickWidth = 60;
 let brickHeight = 20;
 let spacing = 5;
-let brickSpeed = 1;
+let brickSpeed = 0;
 
 let score = 0;
 let lifes = 3;
@@ -55,10 +55,14 @@ function draw() {
         ball.y = height - 250;
         ball.vx = 0;
         ball.vy = 0;
+
+        brickSpeed = 0;
     }
 
     //condicional para durante o jogo(play)
     if (gamestate === "play") {
+        brickSpeed = 0.075;
+
         //movimento da bola
         ball.x += ball.vx;
         ball.y += ball.vy;
